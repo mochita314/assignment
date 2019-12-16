@@ -58,6 +58,8 @@ class Softmax:
         y = exp_x / sum_exp_x
         self.y = y
         return y
+    
+    # Implement backward propagation later, as softmax layer is output layer
 
 # Implement linear layer
 
@@ -79,10 +81,11 @@ class Affine:
         return y
     
     # backward propagation
-    def backward(self):
-        self.grads['dW'] = 
-        self.grads['db'] = 
-
+    def backward(self,dout):
+        dout = np.dot(dout,self.params['W'].T)
+        self.grads['dW'] = np.dot(self.x.T,dout)
+        self.grads['db'] = np.sum(dout,axis=0)
+        return dout
 
 class SGD:
 
@@ -103,6 +106,18 @@ class SGD:
 
 class MLP(layer):
 
-    def __init__(self):
+    def __init__(self,layers=[]):
+        self.layers = layers
+        self.t = None
+    
+    def add_layer(self,layer):
+        self.layers.append(layer)
+    
+    def forward():
+    
+    def backward():
+
+
+
 
 
