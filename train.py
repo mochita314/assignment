@@ -10,3 +10,9 @@ parser.add_argument('--lr', type=float, default=0.01, help='Learning rate')
 args = parser.parse_args()
 
 model = MLP()
+
+model.add_layer()
+model.add_layer()
+model.add_layer()
+model.add_layer()
+model.add_layer()
