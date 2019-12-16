@@ -61,8 +61,43 @@ class Softmax:
 
 class Affine:
 
-class MLP:
+    def __init__(self):
+        # initialize parameter
+        self.x = None
+        self.y = None
+        self.param = True
+        self.W = None
+        self.b = None
+        self.dW = None
+        self.db = None
+    
+    # forward propagation
+    def __call__(self,x):
+        self.x = x
+        y = np.dot(x,self.W) + self.b
+        self.y = y
+        return y
+    
+    # backward propagation
+    def backward(self):
+
 
 class SGD:
 
-        
+    def __init__(self,lr = args.lr):
+        self.lr = lr
+        self.network = None
+    
+    def setup(self,network):
+        self.network = network
+    
+    def update(self):
+        for layer in self.network.layers:
+            if layer.param: # apply for Affine layer
+                layer.W -= self.lr * layer.dW
+                layer.b -= self.lr * layer.db
+
+class MLP(layer):
+
+    def __init__(self):
+
