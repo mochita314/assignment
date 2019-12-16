@@ -3,7 +3,6 @@
 import numpy as np
 import math
 import random
-import argparse
 
 # Implement activation function layers
 
@@ -17,13 +16,14 @@ class Sigmoid:
     # forward propagation
     def __call__(self,x):
         self.x = x
-        y = 1 / (1 + np.exp(-self.x))
+        y = 1 / (1 + np.exp(-x))
         self.y = y
         return y
     
     # backword propagation
     def backward(self,dout):
-        return dout*self.y*(1-self.y)
+        dout = dout*self.y*(1-self.y)
+        return dout
 
 class Relu:
 
@@ -41,13 +41,16 @@ class Relu:
     
     # backward propagation
     def backward(self,dout):
-        return dout*(self.x>0)
+        dout = dout*(self.x>0)
+        return dout
 
 class Softmax:
 
     def __init__(self):
         self.x = None
         self.y = None
+        self.loss = None
+        self.t = None # train_data
         self.param = False
     
     # forward propagation
@@ -59,18 +62,22 @@ class Softmax:
         self.y = y
         return y
     
-    # Implement backward propagation later, as softmax layer is output layer
+    # the way of implementation of backward propagation is different 
+    # as this is the last layer
+    def backward():
+
 
 # Implement linear layer
 
 class Affine:
 
-    def __init__(self):
-        # initialize
+    def __init__(self,input_dim,output_dim):
         self.x = None
         self.y = None
         self.param = True
         self.params = {}
+        self.params['W'] = 0.01 * np.random.randn(input_dim,output_dim)
+        self.params['b'] = 
         self.grads = {}
     
     # forward propagation
@@ -113,9 +120,20 @@ class MLP(layer):
     def add_layer(self,layer):
         self.layers.append(layer)
     
-    def forward():
+    def forward(self,x,t):
+        self.t = t
+        self.x = x
+        self.y = x
+        for layer in self.layers:
+            self.y = layer(self.y)
+        self.loss = np.sum(-t*np/log(self.y + 1e-8)) / len(x)
+        return self.loss
     
-    def backward():
+    def backward(self):
+        dout = (self.)
+
+    
+    def backward(self):
 
 
 
