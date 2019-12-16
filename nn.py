@@ -59,8 +59,10 @@ class Softmax:
         self.y = y
         return y
 
-    
-        
+class Affine:
 
+class MLP:
+
+class SGD:
 
         
