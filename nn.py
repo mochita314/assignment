@@ -5,7 +5,7 @@ import math
 import random
 import argparse
 
-# build a neural network
+# Implement activation function layers
 
 class Sigmoid:
 
@@ -59,32 +59,34 @@ class Softmax:
         self.y = y
         return y
 
+# Implement linear layer
+
 class Affine:
 
     def __init__(self):
-        # initialize parameter
+        # initialize
         self.x = None
         self.y = None
         self.param = True
-        self.W = None
-        self.b = None
-        self.dW = None
-        self.db = None
+        self.params = {}
+        self.grads = {}
     
     # forward propagation
     def __call__(self,x):
         self.x = x
-        y = np.dot(x,self.W) + self.b
+        y = np.dot(x,self.params['W']) + self.params['b']
         self.y = y
         return y
     
     # backward propagation
     def backward(self):
+        self.grads['dW'] = 
+        self.grads['db'] = 
 
 
 class SGD:
 
-    def __init__(self,lr = args.lr):
+    def __init__(self,lr):
         self.lr = lr
         self.network = None
     
@@ -93,11 +95,14 @@ class SGD:
     
     def update(self):
         for layer in self.network.layers:
-            if layer.param: # apply for Affine layer
-                layer.W -= self.lr * layer.dW
-                layer.b -= self.lr * layer.db
+            if layer.param: # don't apply for actibavtion function layers
+                layer.params['W'] -= self.lr * layer.grads['dW']
+                layer.params['b'] -= self.lr * layer.grads['db']
+
+# Implement Multilayer perceptron
 
 class MLP(layer):
 
     def __init__(self):
+
 
