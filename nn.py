@@ -134,4 +134,8 @@ class MLP():
         for layer in reversed(self.layers):
             dout = layer.backward(dout)
 
-def train(model,optimizer):
+def train(model,optimizer,epoch,batchsize):
+
+    lst = []
+
+    return 

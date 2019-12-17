@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+import numpy as np
+import math
+import random
+
 from nn import *
 
 parser = argparse.ArgumentParser(description='Train neural network')
@@ -22,3 +26,4 @@ model.add_layer(Affine(1000,10))
 
 optimizer.setup(model)
 
+train_loss_lst, train_acc_lst, test_loss_lst, test_acc_lst = train(model,optimizer,epoch=args.epoch,batchsize=args.batchsize)
