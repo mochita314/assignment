@@ -4,7 +4,7 @@ import numpy as np
 import math
 import random
 
-# Implement activation function layers
+# activation function layers
 
 class Sigmoid():
 
@@ -47,7 +47,7 @@ class ReLU():
 class Softmax():
 
     # the way of implementation of backward propagation is different from other layers
-    # as this is the last layer
+    # since this layer will be used as the last one
 
     def __init__(self):
         self.x = None
@@ -55,6 +55,7 @@ class Softmax():
         self.t = None
         self.param = False
     
+    # forward propagation
     def __call__(self,x):
         self.x = x
         exp_x = np.exp(x-x.max(axis=1,keepdims=True)) # prevent overflow
@@ -63,11 +64,12 @@ class Softmax():
         self.y = y
         return y
     
+    # backward propagation
     def backward(self,dout=1):
         dout = (self.y-self.t) / len(self.x)
         return dout
 
-# Implement linear layer
+# linear layer
 class Affine():
 
     def __init__(self,input_dim,output_dim):
@@ -96,6 +98,7 @@ class Affine():
         self.grads['db'] = np.sum(dout,axis=0)
         return dout
 
+# optimizer
 class SGD():
 
     def __init__(self,lr):
@@ -107,11 +110,11 @@ class SGD():
     
     def update(self):
         for layer in self.network.layers:
-            if layer.param: # don't apply for actibavtion function layers
+            if layer.param: # don't apply for activation function layers
                 layer.params['W'] -= self.lr * layer.grads['dW']
                 layer.params['b'] -= self.lr * layer.grads['db']
 
-# Implement Multilayer perceptron
+# Multilayer perceptron
 class MLP():
 
     def __init__(self,layers=[]):
