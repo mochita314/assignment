@@ -136,6 +136,4 @@ class MLP():
 
 def train(model,optimizer,epoch,batchsize):
 
-    lst = []
-
-    return 
+    return train_loss_lst,train_acc_lst,test_loss_lst,test_acc_lst
