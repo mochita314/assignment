@@ -4,15 +4,21 @@ from nn import *
 
 parser = argparse.ArgumentParser(description='Train neural network')
 parser.add_argument('--batchsize', '-b', type=int, default=16, help='Number of images in each mini-batch')
-parser.add_argument('--iteration', '-i', type=int, default=100, help='Number of iteration times')
-parser.add_argument('--epoch', '-e', type=int, default=1, help='Number of epoch times')
+#parser.add_argument('--iteration', '-i', type=int, default=100, help='Number of iteration times')
+parser.add_argument('--epoch', '-e', type=int, default=20, help='Number of epoch times')
 parser.add_argument('--lr', type=float, default=0.01, help='Learning rate')
 args = parser.parse_args()
 
-model = MLP()
+# define optimizer
+optimizer = SGD(lr=0.5)
 
-model.add_layer()
-model.add_layer()
-model.add_layer()
-model.add_layer()
-model.add_layer()
+# build a neural network
+model = MLP()
+model.add_layer(Affine(784,1000))
+model.add_layer(ReLU())
+model.add_layer(Affine(1000,1000))
+model.add_layer(ReLU())
+model.add_layer(Affine(1000,10))
+
+optimizer.setup(model)
+

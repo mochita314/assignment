@@ -6,7 +6,7 @@ import random
 
 # Implement activation function layers
 
-class Sigmoid:
+class Sigmoid():
 
     def __init__(self):
         self.x = None
@@ -25,7 +25,7 @@ class Sigmoid:
         dout = dout*self.y*(1-self.y)
         return dout
 
-class Relu:
+class ReLU():
 
     def __init__(self):
         self.x = None
@@ -44,16 +44,17 @@ class Relu:
         dout = dout*(self.x>0)
         return dout
 
-class Softmax:
+class Softmax():
+
+    # the way of implementation of backward propagation is different from other layers
+    # as this is the last layer
 
     def __init__(self):
         self.x = None
         self.y = None
-        self.loss = None
-        self.t = None # train_data
+        self.t = None
         self.param = False
     
-    # forward propagation
     def __call__(self,x):
         self.x = x
         exp_x = np.exp(x-x.max(axis=1,keepdims=True)) # prevent overflow
@@ -62,22 +63,23 @@ class Softmax:
         self.y = y
         return y
     
-    # the way of implementation of backward propagation is different 
-    # as this is the last layer
-    def backward():
-
+    def backward(self,dout=1):
+        dout = (self.y-self.t) / len(self.x)
+        return dout
 
 # Implement linear layer
-
-class Affine:
+class Affine():
 
     def __init__(self,input_dim,output_dim):
         self.x = None
         self.y = None
         self.param = True
         self.params = {}
-        self.params['W'] = 0.01 * np.random.randn(input_dim,output_dim)
-        self.params['b'] = 
+        # initialize weight matrix
+        std = np.sqrt(2.0 / input_dim)
+        self.params['W'] = std * np.random.randn(input_dim,output_dim)
+        # initialize bias vector
+        self.params['b'] = np.zeros(output_dim)
         self.grads = {}
     
     # forward propagation
@@ -94,7 +96,7 @@ class Affine:
         self.grads['db'] = np.sum(dout,axis=0)
         return dout
 
-class SGD:
+class SGD():
 
     def __init__(self,lr):
         self.lr = lr
@@ -110,8 +112,7 @@ class SGD:
                 layer.params['b'] -= self.lr * layer.grads['db']
 
 # Implement Multilayer perceptron
-
-class MLP(layer):
+class MLP():
 
     def __init__(self,layers=[]):
         self.layers = layers
@@ -126,16 +127,11 @@ class MLP(layer):
         self.y = x
         for layer in self.layers:
             self.y = layer(self.y)
-        self.loss = np.sum(-t*np/log(self.y + 1e-8)) / len(x)
+        self.loss = np.sum(-t*np.log(self.y + delta))
         return self.loss
     
     def backward(self):
-        dout = (self.)
+        for layer in reversed(self.layers):
+            dout = layer.backward(dout)
 
-    
-    def backward(self):
-
-
-
-
-
+def train(model,optimizer):
