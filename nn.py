@@ -56,8 +56,9 @@ class Softmax():
         self.param = False
     
     # forward propagation
-    def __call__(self,x):
+    def __call__(self,x,t):
         self.x = x
+        self.t = t
         exp_x = np.exp(x-x.max(axis=1,keepdims=True)) # prevent overflow
         sum_exp_x = np.sum(exp_x,axis=1,keepdims=True)
         y = exp_x / sum_exp_x
@@ -136,7 +137,3 @@ class MLP():
     def backward(self):
         for layer in reversed(self.layers):
             dout = layer.backward(dout)
-
-def train(model,optimizer,epoch,batchsize):
-
-    return train_loss_lst,train_acc_lst,test_loss_lst,test_acc_lst
