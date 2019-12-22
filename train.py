@@ -8,9 +8,28 @@ from nn import *
 
 def train(model,optimizer,epoch,batchsize):
 
+    train_loss_lst = []
+    train_acuracy_lst = []
+    test_loss_lst = []
+    test_acuracy_lst = []
+
+    epo = 0
+
+    while epo < epoch:
+
+        # initialize loss
+        sum_loss = 0
+
+        
+
+
+
+
+
+        epo+=1
     
 
-    return train_loss_lst,train_acc_lst,test_loss_lst,test_acc_lst
+    return train_loss_lst,train_acuracy_lst,test_loss_lst,test_acuracy_lst
 
 if __name__ == '__main__':
 

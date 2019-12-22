@@ -17,3 +17,11 @@ for _file_ in files:
     urllib.request.urlretrieve(url+_file_,file_path)
 
 # open zip files 
+
+def load_image(file_name):
+    file_path = dataset_dir + '/' + file_name
+    with gzip.open(file_path,'rb') as f:
+        data = np.frombuffer(f.read(),np.uint8,offset=16)
+
+def load_label(file_name):
+    file_path = 
