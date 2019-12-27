@@ -22,11 +22,12 @@ def train(model,optimizer,epoch,batchsize):
         pred_y = []
 
         # 訓練データをランダムに並び替える
-        random_sort = np.random.permulation(train_data)
+        #random_sort = np.random.permutation(len(train_data))
 
+        print('start training')
         for i in range(0,len(train_data),batchsize):
-            x = train_data[random_sort[i:i+batchsize]]
-            t = train_label[random_sort[i:i+batchsize]]
+            x = train_data[i:i+batchsize]
+            t = train_label[i:i+batchsize]
 
             loss = model.forward(x,t)
             model.backward()
@@ -38,23 +39,27 @@ def train(model,optimizer,epoch,batchsize):
             pred_y.extend(pred)
         
         train_loss = sum_loss / len(train_data)
-        train_accuracy = np.sum(one_hot(pred)*train_label[random_sort])/len(train_data)
+        train_accuracy = np.sum(np.eye(10)[pred_y]*train_label)/len(train_data)
+        print('finished')
 
+        print('start test')
+        #random_sort = np.random.permutation(len(test_data))
         sum_loss = 0
         pred_y = []
         for i in range(0, len(test_data), batchsize):
-            x = test_x[i: i+batchsize]
-            t = test_y[i: i+batchsize]
+            x = test_data[i: i+batchsize]
+            t = test_label[i: i+batchsize]
 
-            sum_loss += model.forward(x, t, train_config=False)
+            sum_loss += model.forward(x,t)
             pred = np.argmax(model.y, axis=1).tolist()
             pred_y.extend(pred)
         
         test_loss = sum_loss / len(test_data)
-        test_accuracy = np.sum(one_hot(pred)*test_label[random_sort])/len(test_data)
+        test_accuracy = np.sum(np.eye(10)[pred_y]*test_label)/len(test_data)
+        print('finished')
 
-        print('train | loss {:.4f},accuracy{:.4f}'.format(float(train_loss),train_accuracy))
-        print('test | loss {:.4f},accuracy{:.4f}'.format(float(test_loss),test_accuracy))
+        print('train | loss {:.4f}, accuracy {:.4f}'.format(float(train_loss),train_accuracy))
+        print('test | loss {:.4f}, accuracy {:.4f}'.format(float(test_loss),test_accuracy))
 
 if __name__ == '__main__':
 
@@ -62,23 +67,26 @@ if __name__ == '__main__':
     parser.add_argument('--batchsize', '-b', type=int, default=100, help='Number of images in each mini-batch')
     #parser.add_argument('--iteration', '-i', type=int, default=100, help='Number of iteration times')
     parser.add_argument('--epoch', '-e', type=int, default=14, help='Number of epoch times')
-    parser.add_argument('--lr', type=float, default=1.0, help='Learning rate')
+    parser.add_argument('--lr', type=float, default=0.5, help='Learning rate')
     args = parser.parse_args()
 
     # -*- モデルの定義 -*-
 
     # optimizerを定義
-    optimizer = SGD(lr=args.lr)
+    optimizer = SGD(lr=0.5)
 
     # ニューラルネットワークの構成を定義
-    model = MLP()
+    model = MLP([])
     model.add_layer(Affine(784,1000))
-    model.add_layer(ReLU())
+    model.add_layer(Sigmoid())
     model.add_layer(Affine(1000,1000))
-    model.add_layer(ReLU())
+    model.add_layer(Sigmoid())
     model.add_layer(Affine(1000,10))
+    model.add_layer(Softmax())
 
     optimizer.setup(model)
+
+    print(model.layers)
 
     # -*- MNISTのデータをzipファイルとして指定urlからダウンロードし前処理をする -*-
 
@@ -113,7 +121,7 @@ if __name__ == '__main__':
     test_data,test_label = load_image_and_label(files[2],files[3])
     print("complete")
 
-    #print(train_data.flags)
+    # print(train_data.flags)
 
     # 学習データにノイズを加える
     print("add noise")
@@ -128,8 +136,9 @@ if __name__ == '__main__':
     train_label = one_hot(train_label)
     test_label = one_hot(test_label)
 
-    print(train_data[:10])
-    print(train_label[:10])
+    # for debug
+    # print(train_data[:10])
+    # print(train_label[:10])
     # 学習させる
-    #train(model,optimizer,epoch=args.epoch,batchsize=args.batchsize)
-    
+
+    train(model,optimizer,epoch=args.epoch,batchsize=args.batchsize)

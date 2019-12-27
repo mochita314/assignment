@@ -34,7 +34,7 @@ def noise(arr1,d):
     else:
         for i in range(len(arr1)):
             if (i+1)%1000 == 0:
-                print('{:.2f} percent complete'.format(i/600))
+                print('{:.2f} percent complete'.format((i+1)/600))
             for j in range(len(arr1[0])):
                 p = random.randint(1,100)
                 if p<=d:

@@ -9,40 +9,35 @@ import random
 class Sigmoid():
 
     def __init__(self):
-        self.x = None
         self.y = None
         self.param = False
     
     # forward propagation
     def __call__(self,x):
-        self.x = x
         y = 1 / (1 + np.exp(-x))
         self.y = y
         return y
     
     # backword propagation
     def backward(self,dout):
-        dout = dout*self.y*(1-self.y)
-        return dout
+        return dout*self.y*(1-self.y)
 
 class ReLU():
 
     def __init__(self):
+        self.name = "ReLU"
         self.x = None
-        self.y = None
+        #self.y = None
         self.param = False
     
     # forward propagation
     def __call__(self,x):
         self.x = x
-        y = x*(x>0)
-        self.y = y
-        return y
+        return x*(x>0)
     
     # backward propagation
     def backward(self,dout):
-        dout = dout*(self.x>0)
-        return dout
+        return dout*(self.x>0)
 
 class Softmax():
 
@@ -52,13 +47,12 @@ class Softmax():
     def __init__(self):
         self.x = None
         self.y = None
-        self.t = None
+        #self.t = None
         self.param = False
     
     # forward propagation
-    def __call__(self,x,t):
+    def __call__(self,x):
         self.x = x
-        self.t = t
         exp_x = np.exp(x-x.max(axis=1,keepdims=True)) # prevent overflow
         sum_exp_x = np.sum(exp_x,axis=1,keepdims=True)
         y = exp_x / sum_exp_x
@@ -66,43 +60,49 @@ class Softmax():
         return y
     
     # backward propagation
+    """
     def backward(self,dout=1):
         dout = (self.y-self.t) / len(self.x)
         return dout
+    """
 
 # linear layer
 class Affine():
 
     def __init__(self,input_dim,output_dim):
+        self.name = "Affine"
         self.x = None
         self.y = None
         self.param = True
-        self.params = {}
+        #self.params = {}
+        self.dW = None
+        self.db = None
         # initialize weight matrix
         std = np.sqrt(2.0 / input_dim)
-        self.params['W'] = std * np.random.randn(input_dim,output_dim)
+        self.W = std * np.random.randn(input_dim,output_dim)
         # initialize bias vector
-        self.params['b'] = np.zeros(output_dim)
-        self.grads = {}
+        self.b= np.zeros(output_dim)
+
     
     # forward propagation
     def __call__(self,x):
         self.x = x
-        y = np.dot(x,self.params['W']) + self.params['b']
+        y = np.dot(x,self.W) + self.b
         self.y = y
         return y
     
     # backward propagation
-    def backward(self,dout):
-        dout = np.dot(dout,self.params['W'].T)
-        self.grads['dW'] = np.dot(self.x.T,dout)
-        self.grads['db'] = np.sum(dout,axis=0)
+    def backward(self,delta):
+        dout = np.dot(delta,self.W.T)
+        self.dW = np.dot(self.x.T,delta)
+        #print('delta:{}'.format(delta))
+        self.db = np.dot(np.ones(len(self.x)), delta) 
         return dout
 
 # optimizer
 class SGD():
 
-    def __init__(self,lr):
+    def __init__(self,lr=0.01):
         self.lr = lr
         self.network = None
     
@@ -112,8 +112,13 @@ class SGD():
     def update(self):
         for layer in self.network.layers:
             if layer.param: # don't apply for activation function layers
-                layer.params['W'] -= self.lr * layer.grads['dW']
-                layer.params['b'] -= self.lr * layer.grads['db']
+                #p = layer.W
+                layer.W -= self.lr * layer.dW               
+                layer.b -= self.lr * layer.db
+                #print(layer.params['W'][:2])
+                #print(self.lr)
+                #print(layer.dW)
+
 
 # Multilayer perceptron
 class MLP():
@@ -127,13 +132,15 @@ class MLP():
     
     def forward(self,x,t):
         self.t = t
-        self.x = x
+        #self.x = x
         self.y = x
         for layer in self.layers:
+            #print(layer.name)
             self.y = layer(self.y)
-        self.loss = np.sum(-t*np.log(self.y + delta))
+        self.loss = np.sum(-t*np.log(self.y + 1e-7))/len(x)
         return self.loss
     
     def backward(self):
-        for layer in reversed(self.layers):
+        dout = (self.y - self.t) / len(self.layers[-1].x)
+        for layer in self.layers[-2::-1]:
             dout = layer.backward(dout)
