@@ -117,28 +117,19 @@ if __name__ == '__main__':
 
     # 学習データにノイズを加える
     print("add noise")
-    train_data_with_noise = np.zeros((len(train_data),len(train_data[0])))
-    for i in range(len(train_data)):
-        for j in range(len(train_data[0])):
-            p = random.randint(1,100)
-            if p>=5:
-                q = random.randint(0,255)
-                train_data_with_noise[i][j] = q
-            else:
-                train_data_with_noise[i][j] = train_data[i][j]
+    train_data = noise(train_data,0)
     print("finished")
-
-    """
-    noise(train_data,0)
 
     # データの正規化
     train_data = normalize(train_data)
-    test_data = normalize(test_set['data'])
+    test_data = normalize(test_data)
 
     # ラベルをone-hot表現に変換
-    train_label = one_hot(train_set['labels'])
-    test_label = one_hot(test_set['labels'])
+    train_label = one_hot(train_label)
+    test_label = one_hot(test_label)
 
+    print(train_data[:10])
+    print(train_label[:10])
     # 学習させる
     #train(model,optimizer,epoch=args.epoch,batchsize=args.batchsize)
-    """
+    

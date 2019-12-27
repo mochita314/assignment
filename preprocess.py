@@ -26,16 +26,25 @@ def load_image_and_label(data_file_name,label_file_name):
 
     return [data,label]
 
-def noise(arr,d):
+def noise(arr1,d):
 
-    for i in range(len(arr)):
-        for j in range(len(arr[0])):
-            p = random.randint(1,100)
-            if p>=d:
-                q = random.randint(0,255)
-                arr[i][j] = q
-
-    return arr
+    arr2 = np.zeros((len(arr1),len(arr1[0])))
+    if d==0:
+        pass
+    else:
+        for i in range(len(arr1)):
+            if (i+1)%1000 == 0:
+                print('{:.2f} percent complete'.format(i/600))
+            for j in range(len(arr1[0])):
+                p = random.randint(1,100)
+                if p<=d:
+                    q = random.randint(0,255)
+                    arr2[i][j] = q
+                else:
+                    arr2[i][j] = arr1[i][j]
+    
+    arr1 = arr2
+    return arr1
 
 def normalize(arr):
 
