@@ -18,14 +18,13 @@ def load_image_and_label(data_file_name,label_file_name):
     with gzip.open(file_path,'rb') as f:
         data = np.frombuffer(f.read(),np.uint8,offset=16)
     data = data.reshape(-1,784)
-    dic['data'] = data
     
     file_path = dataset_dir + '/' + label_file_name
     with gzip.open(file_path,'rb') as f:
         labels = np.frombuffer(f.read(),np.uint8,offset=8)
-    dic['labels'] = labels
+    label = labels
 
-    return dic
+    return [data,label]
 
 def noise(arr,d):
 

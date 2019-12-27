@@ -101,19 +101,34 @@ if __name__ == '__main__':
     if len(glob.glob('data/*'))!=0:
         print("files are already downloaded")
     else:
-        print("not yet")
+        print("download dataset")
         for v in key_file.values():
             file_path = dataset_dir + '/' + v
             urllib.request.urlretrieve(url+v,file_path)
+        print("complete")
 
     # numpyの配列に変換
-    train_set = load_image_and_label(files[0],files[1])
-    test_set = load_image_and_label(files[2],files[3])
+    print("convert to numpy.ndarray")
+    train_data,train_label = load_image_and_label(files[0],files[1])
+    test_data,test_label = load_image_and_label(files[2],files[3])
+    print("complete")
+
+    #print(train_data.flags)
 
     # 学習データにノイズを加える
-    train_data = train_set['data']
-    print(type(train_data))
+    print("add noise")
+    train_data_with_noise = np.zeros((len(train_data),len(train_data[0])))
+    for i in range(len(train_data)):
+        for j in range(len(train_data[0])):
+            p = random.randint(1,100)
+            if p>=5:
+                q = random.randint(0,255)
+                train_data_with_noise[i][j] = q
+            else:
+                train_data_with_noise[i][j] = train_data[i][j]
+    print("finished")
 
+    """
     noise(train_data,0)
 
     # データの正規化
@@ -126,4 +141,4 @@ if __name__ == '__main__':
 
     # 学習させる
     #train(model,optimizer,epoch=args.epoch,batchsize=args.batchsize)
-
+    """
