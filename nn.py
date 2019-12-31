@@ -9,6 +9,7 @@ import random
 class Sigmoid():
 
     def __init__(self):
+        self.name = "Sigmoid"
         self.y = None
         self.param = False
     
@@ -45,6 +46,7 @@ class Softmax():
     # since this layer will be used as the last one
 
     def __init__(self):
+        self.name = "Softmax"
         self.x = None
         self.y = None
         #self.t = None
@@ -72,7 +74,7 @@ class Affine():
     def __init__(self,input_dim,output_dim):
         self.name = "Affine"
         self.x = None
-        self.y = None
+        #self.y = None
         self.param = True
         #self.params = {}
         self.dW = None

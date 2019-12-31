@@ -30,7 +30,7 @@ def noise(arr1,d):
 
     arr2 = np.zeros((len(arr1),len(arr1[0])))
     if d==0:
-        pass
+        return arr1
     else:
         for i in range(len(arr1)):
             if (i+1)%1000 == 0:
@@ -43,8 +43,8 @@ def noise(arr1,d):
                 else:
                     arr2[i][j] = arr1[i][j]
     
-    arr1 = arr2
-    return arr1
+        arr1 = arr2
+        return arr1
 
 def normalize(arr):
 

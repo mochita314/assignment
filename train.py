@@ -22,35 +22,35 @@ def train(model,optimizer,epoch,batchsize):
         pred_y = []
 
         # 訓練データをランダムに並び替える
-        #random_sort = np.random.permutation(len(train_data))
+        random_sort = np.random.permutation(len(train_data))
 
         print('start training')
         for i in range(0,len(train_data),batchsize):
-            x = train_data[i:i+batchsize]
-            t = train_label[i:i+batchsize]
+            x = train_data[random_sort[i:i+batchsize]]
+            t = train_label[random_sort[i:i+batchsize]]
 
             loss = model.forward(x,t)
             model.backward()
             optimizer.update()
 
-            sum_loss += loss
+            sum_loss += loss*len(x)
 
             pred = np.argmax(model.y,axis=1).tolist()
             pred_y.extend(pred)
         
         train_loss = sum_loss / len(train_data)
-        train_accuracy = np.sum(np.eye(10)[pred_y]*train_label)/len(train_data)
+        train_accuracy = np.sum(np.eye(10)[pred_y]*train_label[random_sort])/len(train_data)
         print('finished')
 
         print('start test')
-        #random_sort = np.random.permutation(len(test_data))
+
         sum_loss = 0
         pred_y = []
         for i in range(0, len(test_data), batchsize):
             x = test_data[i: i+batchsize]
             t = test_label[i: i+batchsize]
 
-            sum_loss += model.forward(x,t)
+            sum_loss += model.forward(x,t)*len(x)
             pred = np.argmax(model.y, axis=1).tolist()
             pred_y.extend(pred)
         
@@ -73,9 +73,12 @@ if __name__ == '__main__':
     # -*- モデルの定義 -*-
 
     # optimizerを定義
-    optimizer = SGD(lr=0.5)
+    optimizer = SGD(lr=0.8)
 
     # ニューラルネットワークの構成を定義
+
+    #model = MLP([Affine(784,1000),Sigmoid(),Affine(1000,1000),Sigmoid(),Affine(1000,10),Softmax()])
+
     model = MLP([])
     model.add_layer(Affine(784,1000))
     model.add_layer(Sigmoid())
@@ -86,7 +89,6 @@ if __name__ == '__main__':
 
     optimizer.setup(model)
 
-    print(model.layers)
 
     # -*- MNISTのデータをzipファイルとして指定urlからダウンロードし前処理をする -*-
 
