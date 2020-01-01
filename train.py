@@ -33,7 +33,7 @@ def train(model,optimizer,epoch,batchsize):
             model.backward()
             optimizer.update()
 
-            sum_loss += loss*len(x)
+            sum_loss += loss
 
             pred = np.argmax(model.y,axis=1).tolist()
             pred_y.extend(pred)
@@ -50,7 +50,7 @@ def train(model,optimizer,epoch,batchsize):
             x = test_data[i: i+batchsize]
             t = test_label[i: i+batchsize]
 
-            sum_loss += model.forward(x,t)*len(x)
+            sum_loss += model.forward(x,t)
             pred = np.argmax(model.y, axis=1).tolist()
             pred_y.extend(pred)
         

@@ -28,17 +28,19 @@ class ReLU():
     def __init__(self):
         self.name = "ReLU"
         self.x = None
-        #self.y = None
+        self.y = None
         self.param = False
     
     # forward propagation
     def __call__(self,x):
         self.x = x
-        return x*(x>0)
+        dout = x*(x>0)
+        return dout
     
     # backward propagation
     def backward(self,dout):
-        return dout*(self.x>0)
+        dout = dout*(self.x>0)
+        return dout
 
 class Softmax():
 
@@ -49,7 +51,7 @@ class Softmax():
         self.name = "Softmax"
         self.x = None
         self.y = None
-        #self.t = None
+        self.t = None
         self.param = False
     
     # forward propagation
@@ -74,7 +76,7 @@ class Affine():
     def __init__(self,input_dim,output_dim):
         self.name = "Affine"
         self.x = None
-        #self.y = None
+        self.y = None
         self.param = True
         #self.params = {}
         self.dW = None
@@ -134,12 +136,12 @@ class MLP():
     
     def forward(self,x,t):
         self.t = t
-        #self.x = x
+        self.x = x
         self.y = x
         for layer in self.layers:
             #print(layer.name)
             self.y = layer(self.y)
-        self.loss = np.sum(-t*np.log(self.y + 1e-7))/len(x)
+        self.loss = np.sum(-t*np.log(self.y + 1e-7))
         return self.loss
     
     def backward(self):
