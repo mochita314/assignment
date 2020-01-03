@@ -2,6 +2,7 @@
 
 import argparse
 
+import matplotlib.pyplot as plt
 import numpy as np
 import math
 import random
@@ -16,6 +17,11 @@ from nn import *
 from preprocess import *
 
 def train(model,optimizer,epoch,batchsize):
+
+    tr_loss_lst = []
+    tr_accuracy_lst = []
+    te_loss_lst = []
+    te_accuracy_lst = []
 
     for epo in range(epoch):
         sum_loss = 0
@@ -40,6 +46,10 @@ def train(model,optimizer,epoch,batchsize):
         
         train_loss = sum_loss / len(train_data)
         train_accuracy = np.sum(np.eye(10)[pred_y]*train_label[random_sort])/len(train_data)
+
+        tr_loss_lst.append(train_loss)
+        tr_accuracy_lst.append(train_accuracy)
+
         print('finished')
 
         print('start test')
@@ -56,35 +66,49 @@ def train(model,optimizer,epoch,batchsize):
         
         test_loss = sum_loss / len(test_data)
         test_accuracy = np.sum(np.eye(10)[pred_y]*test_label)/len(test_data)
+
+        te_loss_lst.append(test_loss)
+        te_accuracy_lst.append(test_accuracy)
+
         print('finished')
 
         print('train | loss {:.4f}, accuracy {:.4f}'.format(float(train_loss),train_accuracy))
         print('test | loss {:.4f}, accuracy {:.4f}'.format(float(test_loss),test_accuracy))
+
+    return tr_loss_lst,tr_accuracy_lst,te_loss_lst,te_accuracy_lst
+
+def show_result(lst1,lst2):
+    plt.plot(np.arange(len(lst1)), np.asarray(lst1), label='train')
+    plt.plot(np.arange(len(lst2)), np.asarray(lst2), label='test')
+    plt.legend()
+    plt.show()
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Train neural network')
     parser.add_argument('--batchsize', '-b', type=int, default=100, help='Number of images in each mini-batch')
     #parser.add_argument('--iteration', '-i', type=int, default=100, help='Number of iteration times')
-    parser.add_argument('--epoch', '-e', type=int, default=14, help='Number of epoch times')
+    parser.add_argument('--size', type=int, default=1000, help='Number of neurons in the middle layer')
+    parser.add_argument('--epoch', '-e', type=int, default=10, help='Number of epoch times')
     parser.add_argument('--lr', type=float, default=0.5, help='Learning rate')
     args = parser.parse_args()
 
     # -*- モデルの定義 -*-
 
     # optimizerを定義
-    optimizer = SGD(lr=0.8)
+    optimizer = SGD(lr=0.5)
 
     # ニューラルネットワークの構成を定義
 
     #model = MLP([Affine(784,1000),Sigmoid(),Affine(1000,1000),Sigmoid(),Affine(1000,10),Softmax()])
 
     model = MLP([])
-    model.add_layer(Affine(784,1000))
+    size = args.size
+    model.add_layer(Affine(784,size))
     model.add_layer(Sigmoid())
-    model.add_layer(Affine(1000,1000))
+    model.add_layer(Affine(size,size))
     model.add_layer(Sigmoid())
-    model.add_layer(Affine(1000,10))
+    model.add_layer(Affine(size,10))
     model.add_layer(Softmax())
 
     optimizer.setup(model)
@@ -143,4 +167,7 @@ if __name__ == '__main__':
     # print(train_label[:10])
     # 学習させる
 
-    train(model,optimizer,epoch=args.epoch,batchsize=args.batchsize)
+    lst1,lst2,lst3,lst4 = train(model,optimizer,epoch=args.epoch,batchsize=args.batchsize)
+
+    show_result(lst1,lst3)
+    show_result(lst2,lst4)

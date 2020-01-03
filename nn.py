@@ -76,13 +76,14 @@ class Affine():
     def __init__(self,input_dim,output_dim):
         self.name = "Affine"
         self.x = None
-        self.y = None
+        #self.y = None
         self.param = True
         #self.params = {}
         self.dW = None
         self.db = None
         # initialize weight matrix
-        std = np.sqrt(2.0 / input_dim)
+        # std = np.sqrt(2.0 / input_dim) <- ReLU
+        std = 1.0
         self.W = std * np.random.randn(input_dim,output_dim)
         # initialize bias vector
         self.b= np.zeros(output_dim)
@@ -136,7 +137,7 @@ class MLP():
     
     def forward(self,x,t):
         self.t = t
-        self.x = x
+        #self.x = x
         self.y = x
         for layer in self.layers:
             #print(layer.name)
