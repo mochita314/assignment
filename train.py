@@ -2,6 +2,7 @@
 
 import argparse
 
+import time
 import matplotlib.pyplot as plt
 import numpy as np
 import math
@@ -87,16 +88,18 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Train neural network')
     parser.add_argument('--batchsize', '-b', type=int, default=100, help='Number of images in each mini-batch')
-    #parser.add_argument('--iteration', '-i', type=int, default=100, help='Number of iteration times')
     parser.add_argument('--size', type=int, default=1000, help='Number of neurons in the middle layer')
     parser.add_argument('--epoch', '-e', type=int, default=10, help='Number of epoch times')
     parser.add_argument('--lr', type=float, default=0.5, help='Learning rate')
+    parser.add_argument('--ratio', type=int, default=0, help='the ratio of noise')
+    parser.add_argument('--function', type=str, default='sigmoid', help='the name of activation function')
+    
     args = parser.parse_args()
 
     # -*- モデルの定義 -*-
 
     # optimizerを定義
-    optimizer = SGD(lr=0.5)
+    optimizer = SGD(lr=args.lr)
 
     # ニューラルネットワークの構成を定義
 
@@ -105,9 +108,27 @@ if __name__ == '__main__':
     model = MLP([])
     size = args.size
     model.add_layer(Affine(784,size))
+
+    if args.function == 'sigmoid':
+        model.add_layer(Sigmoid())
+    else:
+        model.add_layer(ReLU())
+    
+    model.add_layer(Affine(size,size))
+
+    if args.function == 'sigmoid':
+        model.add_layer(Sigmoid())
+    else:
+        model.add_layer(ReLU())
+    
+    """
+    model.add_layer(Affine(size,size))
     model.add_layer(Sigmoid())
     model.add_layer(Affine(size,size))
     model.add_layer(Sigmoid())
+    model.add_layer(Affine(size,size))
+    model.add_layer(Sigmoid())
+    """
     model.add_layer(Affine(size,10))
     model.add_layer(Softmax())
 
@@ -151,7 +172,7 @@ if __name__ == '__main__':
 
     # 学習データにノイズを加える
     print("add noise")
-    train_data = noise(train_data,0)
+    train_data = noise(train_data,d=args.ratio)
     print("finished")
 
     # データの正規化
@@ -167,7 +188,10 @@ if __name__ == '__main__':
     # print(train_label[:10])
     # 学習させる
 
+    start = time.time()
     lst1,lst2,lst3,lst4 = train(model,optimizer,epoch=args.epoch,batchsize=args.batchsize)
+    elapsed_time = time.time()-start
+    print("elapsed_time:{0}".format(elapsed_time)+"[sec]")
 
     show_result(lst1,lst3)
     show_result(lst2,lst4)

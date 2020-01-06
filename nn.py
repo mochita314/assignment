@@ -82,8 +82,8 @@ class Affine():
         self.dW = None
         self.db = None
         # initialize weight matrix
-        # std = np.sqrt(2.0 / input_dim) <- ReLU
-        std = 1.0
+        std = np.sqrt(2.0 / input_dim) # <- ReLU
+        # std = 1.0 # <- Sigmoid
         self.W = std * np.random.randn(input_dim,output_dim)
         # initialize bias vector
         self.b= np.zeros(output_dim)
